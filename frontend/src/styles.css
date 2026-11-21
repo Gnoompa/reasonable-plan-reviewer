@@ -1,0 +1,513 @@
+:root {
+  --canvas: #f8f7f2;
+  --white: #ffffff;
+  --surface: #faf9f5;
+  --ink: #2a2622;
+  --muted: #625950;
+  --border: #d6d6cd;
+  --primary: #6c962c;
+  --deep: #174736;
+  --callout: #f3ffdb;
+  --attention: #cb593b;
+
+  --sans: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --serif: "Source Serif 4", Georgia, serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--canvas);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 12px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: 40px 24px 72px;
+}
+
+/* Header */
+
+header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+h1 {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 500;
+  margin: 0;
+}
+
+select {
+  font: inherit;
+  font-size: 13px;
+  color: var(--ink);
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 10px;
+}
+
+select:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Cards */
+
+.card {
+  background: var(--white);
+  border: 1px solid rgb(214 214 205 / 55%);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 12px;
+}
+
+.label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgb(98 89 80 / 70%);
+  margin: 0 0 14px;
+}
+
+/* Verdict */
+
+.verdict {
+  border-left: 3px solid var(--primary);
+}
+
+.verdict.late,
+.verdict.cycle {
+  border-left-color: var(--attention);
+  background: var(--callout);
+}
+
+.verdict.unknown {
+  border-left-color: var(--border);
+}
+
+.verdict h2 {
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 500;
+  margin: 0 0 6px;
+}
+
+.verdict p {
+  margin: 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.figure {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* Findings */
+
+.finding {
+  padding: 14px 0;
+  border-top: 1px solid rgb(214 214 205 / 55%);
+}
+
+.finding:first-of-type {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.finding h3 {
+  font-size: 13px;
+  font-weight: 500;
+  margin: 0 0 4px;
+}
+
+.finding p {
+  margin: 0 0 8px;
+  color: var(--muted);
+}
+
+blockquote {
+  margin: 0 0 8px;
+  padding: 8px 12px;
+  background: var(--surface);
+  border-left: 2px solid var(--border);
+  border-radius: 0 8px 8px 0;
+  font-family: var(--serif);
+  font-size: 13px;
+  color: var(--ink);
+}
+
+.chip {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+}
+
+.chip.blocks_date {
+  background: rgb(203 89 59 / 10%);
+  color: var(--attention);
+}
+
+.chip.at_risk {
+  background: var(--callout);
+  color: var(--deep);
+}
+
+/* Table */
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+  table-layout: fixed;
+  min-width: 680px;
+}
+
+/* The task name takes whatever is left; every other column is a fixed width. */
+th:nth-child(2), td:nth-child(2) { width: 108px; }
+th:nth-child(3), td:nth-child(3) { width: 58px; }
+th:nth-child(4), td:nth-child(4) { width: 88px; }
+th:nth-child(5), td:nth-child(5) { width: 46px; }
+th:nth-child(6), td:nth-child(6) { width: 46px; }
+th:last-child, td:last-child { width: 34px; }
+
+th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgb(98 89 80 / 70%);
+  padding: 0 8px 8px 0;
+  border-bottom: 1px solid rgb(214 214 205 / 55%);
+}
+
+td {
+  padding: 9px 8px 9px 0;
+  font-size: 13px;
+  border-bottom: 1px solid rgb(214 214 205 / 35%);
+  vertical-align: top;
+  overflow: hidden;
+}
+
+tr:last-child td {
+  border-bottom: 0;
+}
+
+td.num {
+  text-align: right;
+  white-space: nowrap;
+}
+
+td.muted {
+  color: var(--muted);
+}
+
+/* Plan text */
+
+details summary {
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--deep);
+}
+
+pre {
+  font-family: var(--serif);
+  font-size: 13px;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  color: var(--ink);
+  margin: 12px 0 0;
+  max-height: 360px;
+  overflow: auto;
+}
+
+.status {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0 0 16px;
+}
+
+.status.error {
+  color: var(--attention);
+}
+
+/* Rows and controls */
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.row.between {
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.label.inline {
+  display: inline;
+  margin: 0;
+}
+
+.status.inline {
+  margin: 0;
+  font-size: 11px;
+}
+
+.link {
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+  color: var(--deep);
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.link:hover {
+  color: var(--ink);
+}
+
+.button {
+  font: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  background: var(--white);
+  color: var(--ink);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 5px 14px;
+  cursor: pointer;
+}
+
+.button:hover:not(:disabled) {
+  border-color: var(--muted);
+}
+
+.button.primary {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: var(--white);
+}
+
+.button:disabled {
+  opacity: 45%;
+  cursor: default;
+}
+
+.more {
+  margin: 12px 0 0;
+}
+
+/* Editable fields */
+
+/* Scroll the table on narrow screens rather than truncating names. */
+.table-wrap {
+  overflow-x: auto;
+  margin: 0 -4px;
+  padding: 0 4px;
+}
+
+td input {
+  width: 100%;
+  min-width: 0;
+  margin-left: 0;
+  font: inherit;
+  font-size: 13px;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 3px 5px;
+}
+
+td input:hover {
+  border-color: var(--border);
+}
+
+td input:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: var(--white);
+}
+
+td.num input {
+  text-align: right;
+  /* Keep the figure under its column heading, not flush to the left. */
+  max-width: 56px;
+  margin-left: 0;
+}
+
+input[type="number"] {
+  font: inherit;
+  font-size: 13px;
+  color: var(--ink);
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 4px 8px;
+  width: 76px;
+  font-variant-numeric: tabular-nums;
+}
+
+input[type="number"]:focus {
+  outline: none;
+  border-color: var(--primary);
+}
+
+.quote {
+  font-size: 11px;
+  color: rgb(98 89 80 / 70%);
+  margin-top: 2px;
+  padding-left: 6px;
+}
+
+.deadline {
+  margin-bottom: 16px;
+}
+
+/* Gantt */
+
+.gantt {
+  display: grid;
+  gap: 6px;
+}
+
+.gantt-axis,
+.gantt-row {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 12px;
+  align-items: center;
+}
+
+.gantt-axis {
+  font-size: 11px;
+  color: rgb(98 89 80 / 70%);
+  font-variant-numeric: tabular-nums;
+}
+
+.gantt-axis .ticks {
+  display: flex;
+  justify-content: space-between;
+}
+
+.who {
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.track {
+  position: relative;
+  height: 20px;
+  background: var(--surface);
+  border-radius: 6px;
+}
+
+.bar {
+  position: absolute;
+  top: 4px;
+  height: 12px;
+  border-radius: 3px;
+  background: rgb(108 150 44 / 30%);
+  border: 1px solid rgb(108 150 44 / 55%);
+}
+
+.bar.moved {
+  background: rgb(203 89 59 / 18%);
+  border-color: var(--attention);
+}
+
+.moved-chip {
+  margin-left: 6px;
+  font-size: 10px;
+  padding: 1px 6px;
+}
+
+/* Bar labels: only shown when the bar is wide enough to hold text. */
+
+.bar span {
+  display: block;
+  font-size: 10px;
+  line-height: 10px;
+  padding: 0 4px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--deep);
+}
+
+.remove {
+  background: none;
+  border: 0;
+  padding: 0 2px;
+  font-size: 15px;
+  line-height: 1;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.remove:hover {
+  color: var(--attention);
+}
+
+/* The task name wraps instead of truncating, so long names stay readable. */
+
+textarea.name {
+  display: block;
+  margin-left: 0;
+  width: 100%;
+  font: inherit;
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--ink);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 3px 5px;
+  resize: none;
+  overflow: hidden;
+  field-sizing: content;
+}
+
+textarea.name:hover {
+  border-color: var(--border);
+}
+
+textarea.name:focus {
+  outline: none;
+  border-color: var(--primary);
+  background: var(--white);
+}

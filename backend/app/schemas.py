@@ -67,6 +67,23 @@ class AnalyseRequest(BaseModel):
         return self
 
 
+class CorrectionRequest(BaseModel):
+    """The edited task list the events officer promotes to a snapshot."""
+
+    model_config = ConfigDict(extra="ignore")
+
+    tasks: list[Task] = Field(max_length=MAX_TASKS)
+    deadline_day: StrictInt | None = None
+    dismissed: list[str] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def _graph_is_valid(self):
+        problems = graph_problems(self.tasks)
+        if problems:
+            raise ValueError("; ".join(problems))
+        return self
+
+
 class ReviewTask(BaseModel):
     """A task as the model writes it. Lenient where coercion is safe."""
 

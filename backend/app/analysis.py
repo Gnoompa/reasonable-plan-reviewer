@@ -103,12 +103,13 @@ def structural_findings(
     quotes = quotes or {}
 
     if result["status"] == "cycle":
+        chain = " → ".join(result["cycle"])
         findings.append(
             _finding(
                 "cycle",
                 "blocks_date",
                 "Tasks wait on each other in a circle",
-                f"{' → '.join(result['cycle'])} each wait for the next, so none of them can start. "
+                f"{chain} wait for each other, so none of them can start. "
                 "The plan cannot be scheduled until one of those waits is removed.",
                 quotes.get(result["cycle"][0]),
             )
@@ -178,7 +179,14 @@ def _busiest_owner(tasks: list[dict]) -> tuple[str, int] | None:
     return max(sorted(totals.items()), key=lambda item: item[1])
 
 
+def finding_id(finding: dict) -> str:
+    """A stable handle for one finding, so dismissing it does not touch the rest."""
+    return f"{finding['kind']}:{finding['title'].strip().lower()}"
+
+
 def _ranked(findings: list[dict]) -> list[dict]:
+    for finding in findings:
+        finding["id"] = finding_id(finding)
     return sorted(findings, key=lambda finding: SEVERITY_ORDER.get(finding["severity"], 3))
 
 
@@ -207,7 +215,7 @@ def _merge_model_findings(findings: list[dict]) -> list[dict]:
     return list(merged.values())
 
 
-def review_with_findings(review: Review) -> tuple[dict, dict]:
+def review_with_findings(review: Review, dismissed: list[str] | None = None) -> tuple[dict, dict]:
     """The review with code findings merged in, and its schedule.
 
     Code owns the structural kinds, so stored or model findings that claim one
@@ -223,4 +231,6 @@ def review_with_findings(review: Review) -> tuple[dict, dict]:
     model = [finding.model_dump() for finding in review.findings if finding.kind not in STRUCTURAL_KINDS]
     payload = review.model_dump()
     payload["findings"] = _ranked(result["findings"] + _merge_model_findings(model))
+    hidden = set(dismissed or [])
+    payload["findings"] = [finding for finding in payload["findings"] if finding["id"] not in hidden]
     return payload, result["schedule"]

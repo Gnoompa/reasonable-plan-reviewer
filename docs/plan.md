@@ -58,6 +58,22 @@ Decisions made by questioning the plan against [README](../README.md)
 - Not included: owner alias normalisation, table-row coverage check, temperature 0.
 - Known risk: "Ruth" and "Ruth Marsh" would count as two people, the schedule would come out too early, and no warning would show. Include an alias case in the eval set to find out whether the model merges the names.
 
+## Status
+
+Implemented end to end.
+
+- Backend: `schemas.py`, `scheduler.py`, `prompts.py`, `provider.py`, `analysis.py`, `review.py`, `corrections.py`, `main.py`.
+- Frontend: verdict, findings with quotes and dismiss, Gantt by owner, editable task table, save and reset. Styled from BRAND.md.
+- Corrections are written to `data/corrections/<plan>/<plan>_correction_<n>.json`; `data/reviews/` is never edited.
+- 46 tests pass; both contract checks pass; `tsc --noEmit` and pyflakes are clean.
+- The three stored reviews were regenerated with `./review` against the free model.
+
+## Frontend notes
+
+- Each finding carries a stable `id` (`<kind>:<title>`), so dismissing one does not hide the others.
+- Structural findings are recomputed on the server after every edit; model findings stay as stored.
+- The page never calls the model, so it stays fast and works without a key.
+
 ## Scheduler design (CP-SAT)
 
 1. Validate the request with Pydantic; on failure return 4xx with a JSON body.
