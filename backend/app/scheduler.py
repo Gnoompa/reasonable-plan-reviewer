@@ -118,6 +118,8 @@ def list_schedule(tasks: list[dict]) -> dict[str, dict]:
             )
         return tail[task_id]
 
+    # Ties break on the original order, so the same input always gives the same plan.
+    order = {task["id"]: index for index, task in enumerate(tasks)}
     done: dict[str, dict] = {}
     owner_free: dict[str, int] = {}
     while len(done) < len(tasks):
@@ -128,7 +130,7 @@ def list_schedule(tasks: list[dict]) -> dict[str, dict]:
         ]
         if not ready:
             raise ValueError("cycle in task list")
-        task = max(ready, key=lambda item: (tail_of(item["id"]), -tasks.index(item)))
+        task = max(ready, key=lambda item: (tail_of(item["id"]), -order[item["id"]]))
         start = max((done[dep]["end_day"] for dep in task["depends_on"]), default=0)
         if task["owner"] is not None:
             start = max(start, owner_free.get(task["owner"], 0))

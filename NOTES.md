@@ -2,7 +2,7 @@
 
 ## Time spent
 
-2h
+3h
 
 ## What I did
 
@@ -11,6 +11,7 @@
 - Went through "grill" session with AI to compose an ADR
 - Initial implementation and tests
 - Frontend: verdict, findings, Gantt, editing, save corrections (BRAND.md styling)
+- Final fixes, deployment
 
 ## What I cut and why
 
@@ -18,12 +19,9 @@
 
 ## What is not ready
 
-More end-to-end tests, final review, final spec revision
+- UI is as simple as possible with no proper test suite
 
 ## What I would do next and a rough estimate
-
-- End-to-end tests for the page: 30m
-- Review eval set: 15m
 
 ## How I used AI tools
 

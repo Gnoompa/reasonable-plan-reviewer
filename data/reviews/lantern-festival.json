@@ -7,17 +7,21 @@
       "owner": "Ruth",
       "duration_days": 5,
       "depends_on": [],
-      "quote": "Agree the route and the site plan with the council"
+      "quote": "Agree the route and the site plan with the council",
+      "dependency_quotes": {}
     },
     {
       "id": "T2",
       "name": "Apply for the road closure",
       "owner": "Ruth",
-      "duration_days": 10,
+      "duration_days": 14,
       "depends_on": [
         "T1"
       ],
-      "quote": "Apply for the road closure"
+      "quote": "Apply for the road closure",
+      "dependency_quotes": {
+        "T1": "Agree the route and the site plan with the council"
+      }
     },
     {
       "id": "T3",
@@ -27,7 +31,10 @@
       "depends_on": [
         "T1"
       ],
-      "quote": "Arrange first aid cover"
+      "quote": "Arrange first aid cover",
+      "dependency_quotes": {
+        "T1": "Agree the route and the site plan with the council"
+      }
     },
     {
       "id": "T4",
@@ -38,15 +45,24 @@
         "T1",
         "T3"
       ],
-      "quote": "Write the risk assessment"
+      "quote": "Write the risk assessment",
+      "dependency_quotes": {
+        "T1": "Agree the route and the site plan with the council",
+        "T3": "Ruth will write the risk assessment once Gareth has confirmed the first aid cover"
+      }
     },
     {
       "id": "T5",
       "name": "Arrange the event insurance",
       "owner": "Ruth",
       "duration_days": 3,
-      "depends_on": [],
-      "quote": "Arrange the event insurance"
+      "depends_on": [
+        "T4"
+      ],
+      "quote": "Arrange the event insurance",
+      "dependency_quotes": {
+        "T4": "Ruth will do the insurance after that."
+      }
     },
     {
       "id": "T6",
@@ -54,7 +70,8 @@
       "owner": "Ruth",
       "duration_days": 5,
       "depends_on": [],
-      "quote": "Book the Silver Band and the samba band"
+      "quote": "Book the Silver Band and the samba band",
+      "dependency_quotes": {}
     },
     {
       "id": "T7",
@@ -64,7 +81,10 @@
       "depends_on": [
         "T1"
       ],
-      "quote": "Book the food stalls"
+      "quote": "Book the food stalls",
+      "dependency_quotes": {
+        "T1": "Agree the route and the site plan with the council"
+      }
     },
     {
       "id": "T8",
@@ -74,7 +94,10 @@
       "depends_on": [
         "T1"
       ],
-      "quote": "Hire the toilets and the crowd barriers"
+      "quote": "Hire the toilets and the crowd barriers",
+      "dependency_quotes": {
+        "T1": "Agree the route and the site plan with the council"
+      }
     },
     {
       "id": "T9",
@@ -84,7 +107,10 @@
       "depends_on": [
         "T1"
       ],
-      "quote": "Arrange extra bins and a litter-pick team for the night"
+      "quote": "Arrange extra bins and a litter-pick team for the night",
+      "dependency_quotes": {
+        "T1": "Agree the route and the site plan with the council"
+      }
     },
     {
       "id": "T10",
@@ -94,7 +120,10 @@
       "depends_on": [
         "T1"
       ],
-      "quote": "Recruit stewards"
+      "quote": "Recruit stewards",
+      "dependency_quotes": {
+        "T1": "Agree the route and the site plan with the council"
+      }
     },
     {
       "id": "T11",
@@ -105,7 +134,11 @@
         "T10",
         "T4"
       ],
-      "quote": "Brief the stewards"
+      "quote": "Brief the stewards",
+      "dependency_quotes": {
+        "T10": "Recruit stewards",
+        "T4": "once the risk assessment is written"
+      }
     },
     {
       "id": "T12",
@@ -115,7 +148,10 @@
       "depends_on": [
         "T10"
       ],
-      "quote": "Draw up the volunteer rota"
+      "quote": "Draw up the volunteer rota",
+      "dependency_quotes": {
+        "T10": "Recruit stewards"
+      }
     },
     {
       "id": "T13",
@@ -123,7 +159,8 @@
       "owner": "Hannah",
       "duration_days": 14,
       "depends_on": [],
-      "quote": "Raise sponsorship from local businesses"
+      "quote": "Raise sponsorship from local businesses",
+      "dependency_quotes": {}
     },
     {
       "id": "T14",
@@ -133,7 +170,10 @@
       "depends_on": [
         "T13"
       ],
-      "quote": "Order the lantern-making materials"
+      "quote": "Order the lantern-making materials",
+      "dependency_quotes": {
+        "T13": "Raise sponsorship from local businesses"
+      }
     },
     {
       "id": "T15",
@@ -143,7 +183,10 @@
       "depends_on": [
         "T14"
       ],
-      "quote": "Run lantern-making workshops in both of the schools"
+      "quote": "Run the lantern-making workshops in both schools",
+      "dependency_quotes": {
+        "T14": "Order the lantern-making materials"
+      }
     },
     {
       "id": "T16",
@@ -153,7 +196,10 @@
       "depends_on": [
         "T6"
       ],
-      "quote": "Design the poster and flyer"
+      "quote": "Design the poster and flyer",
+      "dependency_quotes": {
+        "T6": "Book the Silver Band and the samba band"
+      }
     },
     {
       "id": "T17",
@@ -164,7 +210,11 @@
         "T16",
         "T2"
       ],
-      "quote": "Print the posters and flyers"
+      "quote": "Print the posters and flyers",
+      "dependency_quotes": {
+        "T16": "Design the poster and flyer",
+        "T2": "The printers cannot have the poster until the road closure has been approved"
+      }
     },
     {
       "id": "T18",
@@ -174,17 +224,23 @@
       "depends_on": [
         "T17"
       ],
-      "quote": "Put up the posters and deliver the flyers"
+      "quote": "Put up the posters and deliver the flyers",
+      "dependency_quotes": {
+        "T17": "Print the posters and flyers"
+      }
     },
     {
       "id": "T19",
-      "name": "Hire the stage lighting and PA",
+      "name": "Arrange hire of the stage lighting and a PA system",
       "owner": "Ruth",
       "duration_days": 3,
       "depends_on": [
         "T6"
       ],
-      "quote": "Once both bands are booked and have sent over what they need, Ruth will also arrange the hire of the stage lighting and a PA system for the green."
+      "quote": "Ruth will also arrange the hire of the stage lighting and a PA system for the green.",
+      "dependency_quotes": {
+        "T6": "Once both bands are booked and have sent over what they need"
+      }
     },
     {
       "id": "T20",
@@ -194,7 +250,10 @@
       "depends_on": [
         "T15"
       ],
-      "quote": "When the workshops finish, Priya will collect the finished lanterns from both schools and store them at the community centre until the evening, which takes her two days."
+      "quote": "Priya will collect the finished lanterns from both schools and store them at the community centre until the evening, which takes her two days.",
+      "dependency_quotes": {
+        "T15": "When the workshops finish"
+      }
     },
     {
       "id": "T21",
@@ -204,24 +263,60 @@
       "depends_on": [
         "T13"
       ],
-      "quote": "Gareth will build the frame for the finale in his garage, so it only needs putting up on the green on the evening."
+      "quote": "Gareth will build the frame for the finale in his garage",
+      "dependency_quotes": {
+        "T13": "He can start as soon as the sponsorship money is in to buy the timber"
+      }
     },
     {
       "id": "T22",
-      "name": "Write the press release and social media posts",
+      "name": "Write the press release and set up social media posts",
       "owner": "Tom",
       "duration_days": 3,
       "depends_on": [
         "T16"
       ],
-      "quote": "Once the poster design is done, Tom will also write the press release for the Pellerby Echo and set up the posts for our social media page, so that everything uses the same artwork."
+      "quote": "Tom will also write the press release for the Pellerby Echo and set up the posts for our social media page",
+      "dependency_quotes": {
+        "T16": "Once the poster design is done"
+      }
     }
   ],
   "findings": [
     {
-      "title": "One task has no owner",
-      "detail": "The task to arrange extra bins and a litter-pick team for the night is marked tbc, so nobody is responsible for it and it may not get done.",
-      "quote": "Arrange extra bins and a litter-pick team for the night"
+      "title": "7 days too late",
+      "detail": "The earliest the work can finish is day 52, and the plan is due on day 45.",
+      "quote": null,
+      "severity": "blocks_date",
+      "kind": "late"
+    },
+    {
+      "title": "A task with nobody named",
+      "detail": "No one is responsible for Arrange extra bins and a litter-pick team for the night, so it may not get done.",
+      "quote": "Arrange extra bins and a litter-pick team for the night",
+      "severity": "at_risk",
+      "kind": "owner"
+    },
+    {
+      "title": "Ruth carries most of the plan",
+      "detail": "Ruth has 52 days of work in a plan that takes 52 days. If they are ill or away, the date slips.",
+      "quote": null,
+      "severity": "at_risk",
+      "kind": "bottleneck"
+    },
+    {
+      "title": "Event insurance is listed with no predecessor, but the notes require the risk assessment first",
+      "detail": "The task table gives Arrange the event insurance a Needs first of -, yet the notes say the broker would not quote until seeing the finished risk assessment, so Ruth does the insurance after that.",
+      "quote": "Last year they would not give us a quote until they had seen the finished risk assessment, so Ruth will do the insurance after that.",
+      "severity": "at_risk",
+      "kind": "model"
+    },
+    {
+      "title": "Printing posters is listed after design only, but the notes also wait on road-closure approval",
+      "detail": "The table makes Print the posters and flyers depend on Design the poster and flyer, yet the notes say the printers cannot have the poster until the road closure has been approved.",
+      "quote": "The printers cannot have the poster until the road closure has been approved",
+      "severity": "at_risk",
+      "kind": "model"
     }
   ]
 }

@@ -175,7 +175,10 @@ export default function App() {
   }, [draft, plan, recompute]);
 
   const schedule = live?.schedule ?? plan?.schedule ?? null;
-  const edited = Boolean(live);
+  // The schedule was recomputed from a changed task list or deadline.
+  const recomputed = Boolean(live);
+  // Dismissing a finding is an edit too, even though it does not change the schedule.
+  const edited = recomputed || (draft?.dismissed.length ?? 0) > 0;
 
   const findings = useMemo(() => {
     if (!plan || !draft) return [];
@@ -290,12 +293,12 @@ export default function App() {
 
       {plan && draft && schedule && (
         <>
-          <Verdict schedule={schedule} original={plan.schedule} edited={edited} />
+          <Verdict schedule={schedule} original={plan.schedule} edited={recomputed} />
 
           <section className="card">
             <div className="row between">
               <h2 className="label">What to look at</h2>
-              {edited && <span className="status inline">Recomputed from your edits</span>}
+              {recomputed && <span className="status inline">Recomputed from your edits</span>}
             </div>
             {findings.length === 0 && <p className="status">Nothing to flag.</p>}
             {visible.map((finding) => (
@@ -348,7 +351,7 @@ export default function App() {
               <h2 className="label">Tasks</h2>
               <div className="row">
                 <button className="button" onClick={add}>Add task</button>
-                <button className="button" onClick={reset} disabled={!edited && draft.dismissed.length === 0}>
+                <button className="button" onClick={reset} disabled={!edited}>
                   Reset
                 </button>
                 <button className="button primary" onClick={save} disabled={busy || !edited}>

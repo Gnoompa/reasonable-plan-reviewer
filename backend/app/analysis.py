@@ -103,15 +103,17 @@ def structural_findings(
     quotes = quotes or {}
 
     if result["status"] == "cycle":
-        chain = " → ".join(result["cycle"])
+        # Close the loop so the reader sees the circle, not just a list.
+        loop = result["cycle"]
+        chain = " → ".join([*loop, loop[0]])
         findings.append(
             _finding(
                 "cycle",
                 "blocks_date",
                 "Tasks wait on each other in a circle",
-                f"{chain} wait for each other, so none of them can start. "
+                f"{chain} is a circle, so none of those tasks can start. "
                 "The plan cannot be scheduled until one of those waits is removed.",
-                quotes.get(result["cycle"][0]),
+                quotes.get(loop[0]),
             )
         )
     elif deadline_day is None:

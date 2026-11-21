@@ -49,17 +49,29 @@ def _stored_review(plan_id: str) -> Review:
 
 
 def _with_correction(review: Review, request: CorrectionRequest) -> Review:
-    """The stored review, with the officer's tasks and deadline in place of the original."""
-    quotes = {task.id: task.quote for task in review.tasks}
-    tasks = [
-        task.model_copy(update={"quote": quotes.get(task.id, "")}) for task in request.tasks
-    ]
+    """The stored review, with the officer's tasks and deadline in place of the original.
+
+    Each task keeps the quote and dependency quotes it had in the stored review,
+    so the page can still show where a remark came from after an edit.
+    """
+    stored = {task.id: task for task in review.tasks}
+    tasks = []
+    for task in request.tasks:
+        original = stored.get(task.id)
+        tasks.append(
+            task.model_copy(
+                update={
+                    "quote": original.quote if original else "",
+                    "dependency_quotes": original.dependency_quotes if original else {},
+                }
+            )
+        )
     return review.model_copy(update={"tasks": tasks, "deadline_day": request.deadline_day})
 
 
-def _correction_payload(plan_id: str, request: CorrectionRequest) -> tuple[dict, dict]:
-    review = _with_correction(_stored_review(plan_id), request)
-    return review_with_findings(review, request.dismissed)
+def _correction_payload(review: Review, request: CorrectionRequest) -> tuple[dict, dict]:
+    """The stored review with the officer's edits applied, recomputed."""
+    return review_with_findings(_with_correction(review, request), request.dismissed)
 
 
 @app.get("/api/plans")
@@ -93,8 +105,14 @@ def post_schedule(request: ScheduleRequest):
 
 @app.post("/api/analyze")
 def post_analyze(request: AnalyseRequest):
-    """Recompute the schedule and the structural findings after an edit."""
-    return analyse([task.model_dump() for task in request.tasks], request.deadline_day)
+    """Recompute the schedule and the structural findings after an edit.
+
+    The task quotes travel with the request, so a structural finding still
+    points at the plan wording after the officer changes a duration or an owner.
+    """
+    tasks = [task.model_dump() for task in request.tasks]
+    quotes = {task["id"]: task["quote"] for task in tasks if task.get("quote")}
+    return analyse(tasks, request.deadline_day, quotes)
 
 
 @app.get("/api/plans/{plan_id}/corrections")
@@ -107,8 +125,8 @@ def get_corrections(plan_id: str):
 def post_correction(plan_id: str, request: CorrectionRequest):
     """Save the officer's edits, then return the recomputed review and schedule."""
     _plan_file(plan_id)
-    payload, result = _correction_payload(plan_id, request)
-    quotes = {task.id: task.quote for task in _stored_review(plan_id).tasks}
+    stored = _stored_review(plan_id)
+    payload, result = _correction_payload(stored, request)
     try:
         summary = save_correction(
             DATA,
@@ -116,7 +134,7 @@ def post_correction(plan_id: str, request: CorrectionRequest):
             [task.model_dump() for task in request.tasks],
             request.deadline_day,
             request.dismissed,
-            quotes,
+            {task.id: task.quote for task in stored.tasks},
         )
     except CorrectionError as error:
         raise HTTPException(status_code=500, detail=str(error))
@@ -131,7 +149,7 @@ def get_correction(plan_id: str, correction_id: str):
     except CorrectionError as error:
         raise HTTPException(status_code=404, detail=str(error))
     payload, result = _correction_payload(
-        plan_id,
+        _stored_review(plan_id),
         CorrectionRequest(
             tasks=correction["tasks"],
             deadline_day=correction.get("deadline_day"),

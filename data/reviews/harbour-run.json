@@ -1,121 +1,169 @@
 {
-  "deadline_day": 99,
+  "deadline_day": null,
   "tasks": [
     {
       "id": "T1",
       "name": "Measure and map the course",
-      "owner": "Dan",
+      "owner": "Dan Fletcher",
       "duration_days": 3,
       "depends_on": [],
-      "quote": "Measure and map the course"
+      "quote": "Measure and map the course",
+      "dependency_quotes": {}
     },
     {
       "id": "T2",
       "name": "Get the course approved by the council",
-      "owner": "Dan",
+      "owner": "Dan Fletcher",
       "duration_days": 7,
       "depends_on": [
         "T1",
         "T3"
       ],
-      "quote": "Get the course approved by the council"
+      "quote": "Get the course approved by the council",
+      "dependency_quotes": {
+        "T1": "Measure and map the course, Take out the event insurance",
+        "T3": "They also need to see our insurance certificate before they will sign off the course."
+      }
     },
     {
       "id": "T3",
       "name": "Take out the event insurance",
-      "owner": "Kerry",
+      "owner": "Kerry Moss",
       "duration_days": 3,
       "depends_on": [
         "T2"
       ],
-      "quote": "Take out the event insurance"
+      "quote": "Take out the event insurance",
+      "dependency_quotes": {
+        "T2": "Kerry will take out the event insurance once the council has approved the course, because the insurers want a copy of the approved course map before they will cover us."
+      }
     },
     {
       "id": "T4",
       "name": "Set up online entries",
-      "owner": "Sam",
+      "owner": "Sam Oduya",
       "duration_days": 2,
       "depends_on": [],
-      "quote": "Set up online entries"
+      "quote": "Set up online entries",
+      "dependency_quotes": {}
     },
     {
       "id": "T5",
       "name": "Order race numbers and timing chips",
-      "owner": "Sam",
+      "owner": "Sam Oduya",
       "duration_days": 10,
       "depends_on": [
         "T4"
       ],
-      "quote": "Order race numbers and timing chips"
+      "quote": "Order race numbers and timing chips",
+      "dependency_quotes": {
+        "T4": "Once entries are open he will order the race numbers and timing chips from the timing company we used for the club championship, which takes about ten days to arrive."
+      }
     },
     {
       "id": "T6",
       "name": "Order medals and T-shirts",
-      "owner": "Lucy",
+      "owner": "Lucy Briggs",
       "duration_days": 14,
       "depends_on": [],
-      "quote": "Order medals and T-shirts"
+      "quote": "Order medals and T-shirts",
+      "dependency_quotes": {}
     },
     {
       "id": "T7",
       "name": "Recruit marshals",
-      "owner": "Lucy",
+      "owner": "Lucy Briggs",
       "duration_days": 7,
       "depends_on": [
         "T2"
       ],
-      "quote": "Recruit marshals"
+      "quote": "Recruit marshals",
+      "dependency_quotes": {
+        "T2": "Lucy will recruit them from the club and from the lifeboat crew's families once the council has approved the course, and Dan will brief them himself."
+      }
     },
     {
       "id": "T8",
       "name": "Brief the marshals",
-      "owner": "Dan",
+      "owner": "Dan Fletcher",
       "duration_days": 2,
       "depends_on": [
         "T7"
       ],
-      "quote": "Brief the marshals"
+      "quote": "Brief the marshals",
+      "dependency_quotes": {
+        "T7": "Recruit marshals"
+      }
     },
     {
       "id": "T9",
       "name": "Book first aid cover",
-      "owner": "Kerry",
+      "owner": "Kerry Moss",
       "duration_days": 3,
       "depends_on": [
         "T2"
       ],
-      "quote": "Book first aid cover"
+      "quote": "Book first aid cover",
+      "dependency_quotes": {
+        "T2": "Get the course approved by the council"
+      }
     },
     {
       "id": "T10",
       "name": "Organise the water stations",
-      "owner": "Sam",
+      "owner": "Sam Oduya",
       "duration_days": 4,
       "depends_on": [
         "T1"
       ],
-      "quote": "Organise the water stations"
+      "quote": "Organise the water stations",
+      "dependency_quotes": {
+        "T1": "Measure and map the course"
+      }
     },
     {
       "id": "T11",
       "name": "Put out posters and the club newsletter",
-      "owner": "Kerry",
+      "owner": "Kerry Moss",
       "duration_days": 5,
       "depends_on": [
         "T4"
       ],
-      "quote": "Put out posters and the club newsletter"
+      "quote": "Put out posters and the club newsletter",
+      "dependency_quotes": {
+        "T4": "the run will go in the club newsletter as soon as entries are open"
+      }
     },
     {
       "id": "T12",
       "name": "Pack the goody bags and get the finish kit ready",
-      "owner": "Lucy",
+      "owner": "Lucy Briggs",
       "duration_days": 3,
       "depends_on": [
         "T6"
       ],
-      "quote": "Pack the goody bags and get the finish kit ready"
+      "quote": "Pack the goody bags and get the finish kit ready",
+      "dependency_quotes": {
+        "T6": "When they arrive she will pack the goody bags and get the finish kit ready"
+      }
     }
   ],
-  "findings": []
+  "findings": [
+    {
+      "title": "Tasks wait on each other in a circle",
+      "detail": "T2 → T3 → T2 is a circle, so none of those tasks can start. The plan cannot be scheduled until one of those waits is removed.",
+      "quote": "Get the course approved by the council",
+      "severity": "blocks_date",
+      "kind": "cycle",
+      "id": "cycle:tasks wait on each other in a circle"
+    },
+    {
+      "title": "Conflicting deadlines",
+      "detail": "The plan gives the run as 30 days after kickoff, the task list as five weeks after kickoff, and a note says to record the deadline as day 99.",
+      "quote": "The run is on a Sunday morning, 30 days after kickoff.",
+      "severity": "blocks_date",
+      "kind": "model",
+      "id": "model:conflicting deadlines"
+    }
+  ]
 }

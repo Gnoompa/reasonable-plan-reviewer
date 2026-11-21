@@ -120,3 +120,37 @@ def test_optimal_result_reports_matching_bound():
     result = schedule([owned("A", 3, "Ann"), owned("B", 4, "Ann")], 10)
     assert result["optimal"] is True
     assert result["lower_bound"] == result["end_day"] == 7
+
+
+def test_fallback_is_deterministic(monkeypatch):
+    """The same input must give the same plan, so a rerun cannot change the answer."""
+    monkeypatch.setattr(scheduler, "cp_model", None)
+    tasks = [
+        owned("A", 2, "Ann"),
+        owned("B", 2, "Ann"),
+        owned("C", 2, "Bob"),
+        owned("D", 1, "Bob", ["A"]),
+    ]
+    first = schedule(tasks, 20)
+    second = schedule(tasks, 20)
+    assert first["end_day"] == second["end_day"]
+    assert first["schedule"] == second["schedule"]
+
+    # Reversing the input may reorder the answer, but must not change the days.
+    reversed_result = schedule(list(reversed(tasks)), 20)
+    assert reversed_result["end_day"] == first["end_day"]
+    by_id = {item["id"]: item for item in reversed_result["schedule"]}
+    for item in first["schedule"]:
+        assert by_id[item["id"]]["start_day"] == item["start_day"]
+
+
+def test_a_wide_graph_stays_within_the_contract_time():
+    """60 tasks is the contract maximum; the answer must come back quickly."""
+    import time
+
+    tasks = [owned(f"T{i}", 1 + i % 4, f"P{i % 5}", [f"T{i - 1}"] if i % 7 == 0 and i else []) for i in range(60)]
+    started = time.perf_counter()
+    result = schedule(tasks, 40)
+    elapsed = time.perf_counter() - started
+    assert result["status"] == "scheduled"
+    assert elapsed < 10, f"took {elapsed:.2f}s"

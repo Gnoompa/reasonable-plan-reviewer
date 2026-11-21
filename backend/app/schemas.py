@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections import Counter
 from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field, StrictInt, field_validator, model_validator
@@ -13,11 +14,11 @@ NO_OWNER = {"", "tbc", "tbd", "none", "nobody", "unknown", "-", "?", "n/a"}
 def graph_problems(tasks: list[Task]) -> list[str]:
     """Duplicate ids and dependencies on ids that are not in the list."""
     problems = []
-    ids = [task.id for task in tasks]
-    duplicates = sorted({task_id for task_id in ids if ids.count(task_id) > 1})
+    counts = Counter(task.id for task in tasks)
+    duplicates = sorted(task_id for task_id, count in counts.items() if count > 1)
     if duplicates:
         problems.append(f"duplicate task ids: {', '.join(duplicates)}")
-    known = set(ids)
+    known = set(counts)
     for task in tasks:
         for dep in task.depends_on:
             if dep not in known:
@@ -26,7 +27,12 @@ def graph_problems(tasks: list[Task]) -> list[str]:
 
 
 class Task(BaseModel):
-    """A schedule request task. Strict, because the contract says integers."""
+    """A schedule request task. Strict, because the contract says integers.
+
+    `quote` and `dependency_quotes` are optional provenance. The contract allows
+    extra fields, and carrying them here lets a structural finding keep pointing
+    at the plan wording after the officer edits the task list.
+    """
 
     model_config = ConfigDict(extra="ignore")
 
@@ -35,53 +41,40 @@ class Task(BaseModel):
     owner: str | None
     duration_days: StrictInt = Field(ge=1)
     depends_on: list[str]
+    quote: str = ""
+    dependency_quotes: dict[str, str] = Field(default_factory=dict)
 
 
-class ScheduleRequest(BaseModel):
+class _TaskList(BaseModel):
+    """A request carrying a task list. The graph must be sound before scheduling."""
+
     model_config = ConfigDict(extra="ignore")
 
     tasks: list[Task] = Field(max_length=MAX_TASKS)
+    deadline_day: StrictInt | None = None
+
+    @model_validator(mode="after")
+    def _graph_is_valid(self):
+        problems = graph_problems(self.tasks)
+        if problems:
+            raise ValueError("; ".join(problems))
+        return self
+
+
+class ScheduleRequest(_TaskList):
+    """The contract request. The deadline is required."""
+
     deadline_day: StrictInt
 
-    @model_validator(mode="after")
-    def _graph_is_valid(self):
-        problems = graph_problems(self.tasks)
-        if problems:
-            raise ValueError("; ".join(problems))
-        return self
 
-
-class AnalyseRequest(BaseModel):
+class AnalyseRequest(_TaskList):
     """An edited task list. The deadline may be unknown."""
 
-    model_config = ConfigDict(extra="ignore")
 
-    tasks: list[Task] = Field(max_length=MAX_TASKS)
-    deadline_day: StrictInt | None = None
-
-    @model_validator(mode="after")
-    def _graph_is_valid(self):
-        problems = graph_problems(self.tasks)
-        if problems:
-            raise ValueError("; ".join(problems))
-        return self
-
-
-class CorrectionRequest(BaseModel):
+class CorrectionRequest(_TaskList):
     """The edited task list the events officer promotes to a snapshot."""
 
-    model_config = ConfigDict(extra="ignore")
-
-    tasks: list[Task] = Field(max_length=MAX_TASKS)
-    deadline_day: StrictInt | None = None
     dismissed: list[str] = Field(default_factory=list)
-
-    @model_validator(mode="after")
-    def _graph_is_valid(self):
-        problems = graph_problems(self.tasks)
-        if problems:
-            raise ValueError("; ".join(problems))
-        return self
 
 
 class ReviewTask(BaseModel):

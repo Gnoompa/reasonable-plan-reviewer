@@ -182,3 +182,45 @@ def test_a_correction_is_saved_and_reloaded(scratch_data):
 
 def test_a_missing_correction_is_404(scratch_data):
     assert client().get("/api/plans/spring-market/corrections/99999").status_code == 404
+
+
+def test_a_correction_keeps_the_plan_quotes(scratch_data):
+    """The officer's edits must not lose where each remark came from."""
+    stored = client().get("/api/plans/spring-market").json()["review"]["tasks"]
+    body = {"tasks": stored, "deadline_day": 21, "dismissed": []}
+    saved = client().post("/api/plans/spring-market/corrections", json=body).json()
+
+    by_id = {task["id"]: task for task in saved["review"]["tasks"]}
+    assert by_id["T2"]["quote"] == "Invite stallholders and confirm their pitches"
+    assert by_id["T2"]["dependency_quotes"] == {"T1": "Book the main hall and the side room"}
+
+
+def test_a_correction_can_change_the_deadline(scratch_data):
+    stored = client().get("/api/plans/spring-market").json()["review"]["tasks"]
+    body = {"tasks": stored, "deadline_day": 10, "dismissed": []}
+    saved = client().post("/api/plans/spring-market/corrections", json=body).json()
+
+    assert saved["review"]["deadline_day"] == 10
+    assert saved["schedule"]["deadline_day"] == 10
+    assert saved["schedule"]["meets_deadline"] is False
+    assert saved["schedule"]["days_late"] == saved["schedule"]["end_day"] - 10
+
+
+def test_analyze_keeps_the_quote_on_a_structural_finding():
+    """A structural finding raised after an edit still points at the plan wording."""
+    request = {
+        "tasks": [
+            {
+                "id": "T1",
+                "name": "Book the hall",
+                "owner": None,
+                "duration_days": 2,
+                "depends_on": [],
+                "quote": "Book the hall",
+            }
+        ],
+        "deadline_day": 10,
+    }
+    body = client().post("/api/analyze", json=request).json()
+    owner = next(finding for finding in body["findings"] if finding["kind"] == "owner")
+    assert owner["quote"] == "Book the hall"
